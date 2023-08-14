@@ -15,7 +15,7 @@ Hulu 总部位于美国洛杉矶，在全球一共拥有 8 个办公室。北京
 <div style="text-align:center;font-weight:bold;margin-top: 35px;font-size: 25pt;"> Hulu 北京办公室 </div>
 <img style="display: block;margin: 0 auto;" src="https://i.loli.net/2020/02/03/M9dIrShWJDNoGia.png" />
 
-Hulu 北京办公室成立于 2007 年，目前规模为 200 人，其中博士和硕士比例超过百分之八十。Hulu 北京于 2018 和 2019 连续两年当选“大中华区最佳职场 ®”。
+Hulu 北京办公室成立于 2007 年，目前规模为 200 人，其中博士和硕士比例超过百分之八十。Hulu 北京于 2018 和 2019 连续两年当选「大中华区最佳职场 ®」。
 
 <div style="text-align:center;font-weight:bold;margin-top: 35px;font-size: 25pt;"> Hulu 校园机会 </div>
 
@@ -23,4 +23,4 @@ Hulu 北京办公室成立于 2007 年，目前规模为 200 人，其中博士�
 <a href="https://sm.ms/image/Ls1cPJAB36gUztN" target="_blank"><img src="https://i.loli.net/2020/02/03/iSGMqmy8fTDJ5bz.png" ></a>
 </div>
 
-正如 Hulu 的产品是技术与娱乐的最佳结合，在 Hulu 工作，既能与一群志同道合的技术达人合作学习，又能享受充满乐趣的工作环境。Hulu 北京面向校园群体开放全年实习生招聘项目。欢迎关注 **Hulu 微信公众号** 了解更多关于 Hulu 的信息！
+正如 Hulu 的产品是技术与娱乐的最佳结合，在 Hulu 工作，既能与一群志同道合的技术达人合作学习，又能享受充满乐趣的工作环境。Hulu 北京面向校园群体开放全年实习生招聘项目。欢迎关注 **Hulu Beijing 微信公众号** 了解更多关于 Hulu 的信息！

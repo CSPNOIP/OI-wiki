@@ -84,7 +84,15 @@ export class MathRenderer {
 
   render(math: string, isDisplay: boolean) {
     const element = this.document.convert(math, { display: isDisplay }) as LiteElement;
-    this.adaptor.setAttribute(element, "title", math);
+    // @ts-expect-error the .create() method is wrongly set to protected
+    const emptyImg = this.adaptor.create("img");
+    this.adaptor.setAttribute(
+      emptyImg,
+      "src",
+      "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+    );
+    this.adaptor.setAttribute(emptyImg, "title", math);
+    this.adaptor.append(element, emptyImg);
     return this.adaptor.outerHTML(element);
   }
 }
@@ -138,14 +146,12 @@ export const taskHandler = new (class implements TaskHandler<void> {
       element.replaceWith(html);
     });
 
-    // Inject CSS <link> element (if rendered any math elements)
-    if (mathElements.length > 0) {
-      const htmlFilePathToRoot = path.relative(this.siteDir, filePath);
-      const cssFilePathToHtml = path.relative(path.dirname(htmlFilePathToRoot), MATHJAX_TARGET_CSS_FILE);
-      document
-        .querySelector("head")
-        .insertAdjacentHTML("beforeend", `<link rel="stylesheet" href="${cssFilePathToHtml}">`);
-    }
+    // Inject CSS <link> element (not checking if we have maths since we use instant loading)
+    const htmlFilePathToRoot = path.relative(this.siteDir, filePath);
+    const cssFilePathToHtml = path.relative(path.dirname(htmlFilePathToRoot), MATHJAX_TARGET_CSS_FILE);
+    document
+      .querySelector("head")
+      .insertAdjacentHTML("beforeend", `<link rel="stylesheet" href="${cssFilePathToHtml}">`);
 
     // Remove client-side rendering script
     document

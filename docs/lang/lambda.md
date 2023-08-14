@@ -4,7 +4,7 @@
 
 ## Lambda 表达式
 
-Lambda 表达式基于数学中的λ演算得名，直接对应于其中的 lambda 抽象。Lambda 表达式能够捕获作用域中的变量的无名函数对象。我们可以将其理解为一个匿名的内联函数，可以用来替换独立函数或者函数对象，从而使代码更可读。但是从本质上来讲，Lambda 表达式只是一种语法糖，因为它能完成的工作也可以用其他复杂的 C++ 语法来实现。
+Lambda 表达式因数学中的 $\lambda$ 演算得名，直接对应于其中的 lambda 抽象。Lambda 表达式能够捕获作用域中的变量的无名函数对象。我们可以将其理解为一个匿名的内联函数，可以用来替换独立函数或者函数对象，从而使代码更可读。但是从本质上来讲，Lambda 表达式只是一种语法糖，因为它能完成的工作也可以用其他复杂的 C++ 语法来实现。
 
 下面是 Lambda 表达式的语法：
 
@@ -22,11 +22,11 @@ Lambda 表达式以 capture 子句开头，它指定哪些变量被捕获，以�
 
 例如 Lambda 体要通过引用访问外部变量 `a` 并通过值访问外部变量 `b`，则以下子句等效：
 
-- `[&a, b]`
-- `[b, &a]`
-- `[&, b]`
-- `[b, &]`
-- `[=, &a]`
+-   `[&a, b]`
+-   `[b, &a]`
+-   `[&, b]`
+-   `[b, &]`
+-   `[=, &a]`
 
 默认捕获时，会捕获 Lambda 中提及的变量。获的变量成为 Lambda 的一部分；与函数参数相比，调用 Lambda 时不必传递它们。
 
@@ -35,8 +35,8 @@ Lambda 表达式以 capture 子句开头，它指定哪些变量被捕获，以�
 ```cpp
 int a = 0;
 auto f = []() { return a * 9; };   // Error, 无法访问 'a'
-auto f = [a]() { return a * 9; };  // OK, 'a' 被值“捕获”
-auto f = [&a]() { return a++; };   // OK, 'a' 被引用“捕获”
+auto f = [a]() { return a * 9; };  // OK, 'a' 被值「捕获」
+auto f = [&a]() { return a++; };   // OK, 'a' 被引用「捕获」
                                   // 注意：请保证 Lambda 被调用时 a 没有被销毁
 auto b = f();  // f 从捕获列表里获得 a 的值，无需通过参数传入 a
 ```
@@ -131,11 +131,11 @@ auto x2 = [] { return {1, 2}; };    // Error, 返回类型被推导为 void
 
 Lambda 主体可包含任何函数可包含的部分。普通函数和 Lambda 表达式主体均可访问以下变量类型：
 
-- 从封闭范围捕获变量
-- 参数
-- 本地声明的变量
-- 在一个 `class` 中声明时，若捕获 `this`，则可以访问该对象的成员
-- 具有静态存储时间的任何变量，如全局变量
+-   从封闭范围捕获变量
+-   参数
+-   本地声明的变量
+-   在一个 `class` 中声明时，若捕获 `this`，则可以访问该对象的成员
+-   具有静态存储时间的任何变量，如全局变量
 
 下面是一个例子
 
@@ -151,3 +151,73 @@ int main() {
 ```
 
 最后我们得到输出 `5 0`。这是由于 `n` 是通过值捕获的，在调用 Lambda 表达式后仍保持原来的值 `0` 不变。`mutable` 规范允许 `n` 在 Lambda 主体中被修改，将 `mutable` 删去则编译不通过。
+
+### 使用类完成更复杂的操作
+
+在 C++11 前没有 Lambda 表达式，但可以使用稍复杂的方法替代，尽管看上去更复杂却更易理解及扩展。
+
+首先我们已经知道 Lambda 本质是一个可调用的对象，那么直接定义一个类并构造一个对象，重载其 `operator()` 运算符就可以完成和 Lambda 一样的操作，下面看一个简单的例子，我们将使用 C++17 的语法：
+
+```cpp
+#include <iostream>
+
+struct AbstractCallable {
+  AbstractCallable(int v) : v_(v) {}
+
+  virtual ~AbstractCallable() = default;
+  virtual int operator()(int) const = 0;  // 纯虚函数需要继承后实现才可以实例化
+  int v_;
+};
+
+AbstractCallable *get_CallableObject() {
+  struct Callable : public AbstractCallable {
+    Callable() : AbstractCallable(10) {}
+
+    int operator()(int k) const override {
+      std::cout << v_ + k << std::endl;
+      return v_ - 10;
+    }
+  };
+
+  return new Callable;
+}
+
+int main() {
+  auto t = get_CallableObject();
+  std::cout << t->operator()(5);  // 或者等价的 `(*t)(5);`
+  delete t;
+  return 0;
+}
+```
+
+在写 Lambda 表达式时，我们几乎都可以将其等价的映射为上面这种形式。
+
+| Lambda 表达式相关语法          | 类的语法                       |
+| :---------------------- | :------------------------- |
+| capture 捕获子句            | 构造函数                       |
+| -                       | 析构函数                       |
+| 使用 `std::function` 包装传递 | 基类指针/引用传递                  |
+| 拷贝多个 Lambda 的函数对象       | 自定义的拷贝函数                   |
+| `mutable`               | `operator()` 函数是否为 `const` |
+
+在 Lambda 的捕获子句中分为引用捕获和按值捕获（暂不考虑比较特殊的捕获 `this` 等），而在类的构造函数中我们可以更精细的控制这一点，另外自定义的析构函数的存在也方便我们更好的扩展，缺点是不够「匿名」，因为仍需要类名。
+
+假设我们有一个函数
+
+```cpp
+void func(std::function<int(int)>);
+```
+
+那么上述用例中就可以改为
+
+```cpp
+void func(AbstractCallable *);
+```
+
+并且既然 `Callable` 是一个可调用对象，我们也可以通过 `std::bind(&AbstractCallable::operator(), t, std::placeholders::_1)` 来将其转换再转换为 `std::function<int(int)>`。
+
+如果不需要实现类似 `std::function` 的包装，那么也无需使用抽象基类，这样便和一般的 Lambda 表达式一样不会产生额外的虚拟函数表的开销。
+
+## 参考文献
+
+-   <https://en.cppreference.com/w/cpp/language/lambda>

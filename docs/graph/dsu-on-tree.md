@@ -1,6 +1,6 @@
 author: abc1763613206, cesonic, Ir1d, MingqiHuang, xinchengo
 
-### 引入
+## 引入
 
 启发式算法是什么呢？
 
@@ -25,13 +25,13 @@ void merge(int x, int y) {
 
 让高度小的树成为高度较大的树的子树，这个优化可以称为启发式合并算法。
 
-### 算法内容
+## 算法内容
 
 树上启发式合并（dsu on tree）对于某些树上离线问题可以速度大于等于大部分算法且更易于理解和实现的算法。
 
-考虑下面的问题：
+考虑下面的问题：[树上数颜色](https://www.luogu.com.cn/problem/U41492)
 
-???+note "例题引入"
+???+ note "例题引入"
     给出一棵 $n$ 个节点以 $1$ 为根的树，节点 $u$ 的颜色为 $c_u$，现在对于每个结点 $u$ 询问 $u$ 子树里一共出现了多少种不同的颜色。
     
     $n\le 2\times 10^5$。
@@ -44,6 +44,8 @@ void merge(int x, int y) {
 
 不行，莫队带根号，我要 log
 
+## 过程
+
 既然支持离线，考虑预处理后 $O(1)$ 输出答案。
 
 直接暴力预处理的时间复杂度为 $O(n^2)$，即对每一个子节点进行一次遍历，每次遍历的复杂度显然与 $n$ 同阶，有 $n$ 个节点，故复杂度为 $O(n^2)$。
@@ -52,13 +54,13 @@ void merge(int x, int y) {
 
 我们可以先预处理出每个节点子树的大小和它的重儿子，重儿子同树链剖分一样，是拥有节点最多子树的儿子，这个过程显然可以 $O(n)$ 完成
 
-我们用 cnt[i]表示颜色 $i$ 的出现次数，ans[u]表示结点 $u$ 的答案。
+我们用 cnt\[i] 表示颜色 $i$ 的出现次数，ans\[u] 表示结点 $u$ 的答案。
 
 遍历一个节点 $u$，我们按以下的步骤进行遍历：
 
-1. 先遍历 $u$ 的轻（非重）儿子，并计算答案，但 **不保留遍历后它对 cnt 数组的影响**；
-2. 遍历它的重儿子，**保留它对 cnt 数组的影响**；
-3. 再次遍历 $u$ 的轻儿子的子树结点，加入这些结点的贡献，以得到 $u$ 的答案。
+1.  先遍历 $u$ 的轻（非重）儿子，并计算答案，但 **不保留遍历后它对 cnt 数组的影响**；
+2.  遍历它的重儿子，**保留它对 cnt 数组的影响**；
+3.  再次遍历 $u$ 的轻儿子的子树结点，加入这些结点的贡献，以得到 $u$ 的答案。
 
 ![dsu-on-tree-2.png](./images/dsu-on-tree-2.svg)
 
@@ -74,7 +76,7 @@ void merge(int x, int y) {
 
 注意除了重儿子，每次遍历完 cnt 要清零。
 
-### 复杂度
+## 证明
 
 （对于不关心复杂度证明的，可以跳过不看）
 
@@ -88,7 +90,9 @@ void merge(int x, int y) {
 
 *图中标粗的即为重边，重边连向的子节点为重儿子*
 
-???+note "代码实现"
+## 实现
+
+???+ note "实现"
     ```cpp
     #include <bits/stdc++.h>
     using namespace std;
@@ -179,7 +183,7 @@ void merge(int x, int y) {
     }
     ```
 
-### 运用
+## 运用
 
 1.  某些出题人设置的正解是 dsu on tree 的题
 
@@ -193,7 +197,7 @@ void merge(int x, int y) {
 
     可以水一些树套树的部分分（没有修改操作），还可以把树上莫队的 $O(n\sqrt{m})$ 吊着打
 
-### 练习题
+## 练习题
 
 [CF600E Lomsat gelral](http://codeforces.com/problemset/problem/600/E)
 
@@ -201,7 +205,9 @@ void merge(int x, int y) {
 
 [UOJ284 快乐游戏鸡](https://uoj.ac/problem/284)
 
-### 参考资料/扩展阅读
+[CF1709E XOR Tree](https://codeforces.com/contest/1709/problem/E)
+
+## 参考资料/扩展阅读
 
 [CF741D 作者介绍的 dsu on tree](http://codeforces.com/blog/entry/44351)
 
